@@ -1,83 +1,145 @@
 import React, { useState } from 'react';
 import { VisualEditor, CodeEditor, Examples } from '@asyncapi/studio-ui';
 
-const meta = {
+// visualeditor.stories.tsx
+// import React, { useState } from 'react';
+// import VisualEditor from './VisualEditor'; // Update the import path as needed
+// import CodeEditor from './CodeEditor'; // Update the import path as needed
+
+export default {
+  title: 'SchemaEditor/VisualEditor',
   component: VisualEditor,
   parameters: {
     layout: 'fullscreen',
-    backgrounds: {
-      default: 'light'
-    }
   },
 };
 
-export default meta;
-
-const EditorToggle: React.FC<{ schema: string; onSchemaChange: (schema: string) => void }> = ({ schema, onSchemaChange }) => {
-  const [activeSystem, setActiveSystem] = useState('vis');
-
-  const handleSystemClick = (systemKey: string) => {
-    setActiveSystem(systemKey);
-  };  
+const Template = ({ initialSchema }) => {
+  const [schema, setSchema] = useState(initialSchema);
+  const [editorType, setEditorType] = useState('visual'); // 'visual' or 'code'
 
   return (
-    <div className="flex flex-col mx-auto p-4">
-      <div className="flex justify-between mb-4">
-        <button className={`p-2 rounded-md border border-gray-300 ${activeSystem === 'vis' ? 'bg-gray-200' : ''}`} onClick={() => handleSystemClick('vis')}>
-          Visual
-        </button>
-        <button className={`p-2 rounded-md border border-gray-300 ${activeSystem === 'code' ? 'bg-gray-200' : ''}`} onClick={() => handleSystemClick('code')}>
-          Code
-        </button>
-        <button className={`p-2 rounded-md border border-gray-300 ${activeSystem === 'ex' ? 'bg-gray-200' : ''}`} onClick={() => handleSystemClick('ex')}>
-          Examples
-        </button>
+    <div>
+      <div style={{ marginBottom: 10 }}>
+        <button onClick={() => setEditorType('visual')}>Visual Editor</button>
+        <button onClick={() => setEditorType('code')}>Code Editor</button>
       </div>
-      {activeSystem === 'vis' && <VisualEditor schema={schema} onSchemaChange={onSchemaChange} />}
-      {activeSystem === 'code' && <CodeEditor schema={schema} onSchemaChange={onSchemaChange} />}
-      {activeSystem === 'ex' && <Examples />}
+      <div>
+        {editorType === 'visual' && (
+          <VisualEditor schema={schema} onSchemaChange={setSchema} />
+        )}
+        {editorType === 'code' && (
+          <CodeEditor schema={schema} onSchemaChange={setSchema} />
+        )}
+      </div>
     </div>
   );
 };
 
-export const DefaultSchema = () => {
-  const [schema, setSchema] = useState('{}');
+export const DefaultView = () => <Template initialSchema="{}" />;
 
-  return <EditorToggle schema={schema} onSchemaChange={setSchema} />;
-};
-
-export const WithCustomSchema = () => {
-  const customSchema = JSON.stringify({
-    type: "object",
-    properties: {
-      firstName: {
-        type: "string"
-      },
-      lastName: {
-        type: "string"
-      },
-      age: {
-        type: "boolean"
-      },
-      height: {
-        type: ["integer", "null"]
-      },
-      friends: {
-        type: "array",
-        items: {
+export const WithSampleSchema = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      type: "object",
+      properties: {
+        firstName: { type: "string" },
+        lastName: { type: "string" },
+        age: { type: "integer" },
+        address: {
           type: "object",
           properties: {
-            firstName: {
-              type: "string"
-            }
-          }
+            street: { type: "string" },
+            city: { type: "string" }
+          },
+          required: ["street", "city"]
         }
+      },
+      required: ["firstName", "lastName"]
+    }, null, 2)}
+  />
+);
+
+export const SingleProperty = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "string"
+  }, null, 2)}
+  />
+);
+
+export const WithObject = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "address": {
+          "type": "object",
+          "properties": {
+            "street": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "street",
+            "city"
+          ]
+        }
+      },
+      "required": [
+        "firstName",
+        "lastName"
+      ]
+    }, null, 2)}
+  />
+);
+
+
+
+
+
+export const WithArray_obj_and_obj = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "object",
+      "properties": {
+        "books": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              }
+            },
+  
+            "required": [ "title"]
+          }
+        },
+        "list": {
+              "type": "object",
+              "properties": {
+                  "hii": {
+                    "type": "string"
+                  }
+              }
+          }
       }
-    },
-    required: ["firstName", "lastName"]
-  }, null, 2);
-
-  const [schema, setSchema] = useState(customSchema);
-
-  return <EditorToggle schema={schema} onSchemaChange={setSchema} />;
-};
+    }, null, 2)}
+  />
+);
