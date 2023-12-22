@@ -1,7 +1,6 @@
 // SchemaProperty.tsx
 import React from 'react';
 import SchemaObject from './SchemaObject';
-import PropertyControls from './PropertyControls';
 
 const SchemaProperty = ({
     name, 
@@ -18,13 +17,11 @@ const SchemaProperty = ({
 }) => {
     const handleTypeChange = (event) => {
         const newType = event.target.value;
-        let updatedSchema = { ...schema, type: newType };
+        const updatedSchema = { ...schema, type: newType };
 
         if (newType === 'array') {
+            // Initialize as an array of strings if not already specified
             updatedSchema.items = schema.items || { type: 'string' };
-        } else if (newType === 'object') {
-            updatedSchema.properties = schema.properties || {};
-            updatedSchema.required = schema.required || [];
         }
 
         onTypeChange(path, name, updatedSchema);
@@ -54,34 +51,22 @@ const SchemaProperty = ({
 
     const renderNestedProperties = () => {
         if (schema.type === 'object') {
-            return (
-                <>
-                    {Object.keys(schema.properties || {}).map((nestedName) => (
-                        <SchemaProperty
-                            key={nestedName}
-                            name={nestedName}
-                            schema={schema.properties[nestedName]}
-                            onRemove={onRemoveNestedProperty}
-                            onToggleRequired={onToggleNestedRequired}
-                            isRequired={(schema.required || []).includes(nestedName)}
-                            onTypeChange={onTypeChange}
-                            onAddNestedProperty={onAddNestedProperty}
-                            onRemoveNestedProperty={onRemoveNestedProperty}
-                            onToggleNestedRequired={onToggleNestedRequired}
-                            path={`${path}.${name}`}
-                            level={level + 1}
-                        />
-                    ))}
-                    <PropertyControls
-                        onAdd={onAddNestedProperty}
-                        onRemove={onRemoveNestedProperty}
-                        onToggleRequired={onToggleNestedRequired}
-                        schemaPath={`${path}.${name}`}
-                        level={level + 1}
-                        requiredFields={schema.required || []}
-                    />
-                </>
-            );
+            return Object.keys(schema.properties || {}).map((nestedName) => (
+                <SchemaProperty
+                    key={nestedName}
+                    name={nestedName}
+                    schema={schema.properties[nestedName]}
+                    onRemove={onRemoveNestedProperty}
+                    onToggleRequired={onToggleNestedRequired}
+                    isRequired={(schema.required || []).includes(nestedName)}
+                    onTypeChange={onTypeChange}
+                    onAddNestedProperty={onAddNestedProperty}
+                    onRemoveNestedProperty={onRemoveNestedProperty}
+                    onToggleNestedRequired={onToggleNestedRequired}
+                    path={`${path}.${name}`}
+                    level={level + 1}
+                />
+            ));
         }
         return null;
     };
@@ -98,7 +83,7 @@ const SchemaProperty = ({
                     <option value="array">Array</option>
                 </select>
                 <button onClick={handleRemove}>Remove</button>
-                <button onClick={handleToggleRequired} style={{ backgroundColor: isRequired ? 'red' : 'grey' }}>
+                <button onClick={handleToggleRequired}>
                     {isRequired ? 'Unmark as Required' : 'Mark as Required'}
                 </button>
             </div>

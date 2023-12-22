@@ -1,5 +1,6 @@
 // CodeEditor.tsx
 import React, { useState, useEffect } from 'react';
+import debounce from 'lodash/debounce';
 
 export const CodeEditor = ({ schema, onSchemaChange }) => {
     const [value, setValue] = useState(schema);
@@ -9,32 +10,26 @@ export const CodeEditor = ({ schema, onSchemaChange }) => {
         setValue(schema);
     }, [schema]);
 
-    const handleChange = (event) => {
-        const newValue = event.target.value;
-        setValue(newValue);
-
+    const handleChange = debounce((newValue) => {
         try {
-            const parsedSchema = JSON.parse(newValue);
+            JSON.parse(newValue);
             setError('');
-            onSchemaChange(JSON.stringify(parsedSchema, null, 2)); // Update the schema in a standardized format
+            onSchemaChange(newValue);
         } catch (e) {
-            if (e instanceof SyntaxError) {
-                setError('Invalid JSON: ' + e.message);
-            } else {
-                setError('An error occurred: ' + e.message);
+            if (e instanceof Error) {
+                setError(e.message);
             }
         }
-    };
+    }, 250);
 
     return (
         <div className="code-editor">
             <h2>Code Editor</h2>
+            {error && <p>Error: {error}</p>}
             <textarea
                 value={value}
-                onChange={handleChange}
-                style={{ width: '100%', height: '400px' }} // Adjust size as needed
+                onChange={(e) => handleChange(e.target.value)}
             />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 };
