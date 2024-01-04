@@ -9,13 +9,14 @@ const SchemaObject = ({
   path,
   level
 }) => {
+  // Handler to add a new property to the schema
   const handleAddProperty = (path, newProperty) => {
     const newSchema = { ...schema };
     if (!newSchema.properties) {
       newSchema.properties = {};
     }
 
-    newSchema.properties[newProperty.name] = newProperty.schema; // Use the schema from newProperty
+    newSchema.properties[newProperty.name] = newProperty.schema; 
 
     if (newProperty.isRequired) {
       if (!newSchema.required) {
@@ -27,6 +28,7 @@ const SchemaObject = ({
     onSchemaChange(path, newSchema);
   };
 
+  // Handler to remove a property from the schema
   const handleRemoveProperty = (path, propertyName) => {
     const newSchema = { ...schema };
     delete newSchema.properties[propertyName];
@@ -34,6 +36,7 @@ const SchemaObject = ({
     onSchemaChange(path, newSchema);
   };
 
+  // Handler to toggle required status of a property
   const handleToggleRequired = (path, propertyName) => {
     const newSchema = { ...schema };
     if (newSchema.required?.includes(propertyName)) {
@@ -47,6 +50,7 @@ const SchemaObject = ({
     onSchemaChange(path, newSchema);
   };
 
+  // Handler to change the type of a property
   const handleTypeChange = (path, propertyName, newSchemaForProperty) => {
     const newSchema = { ...schema };
     newSchema.properties[propertyName] = newSchemaForProperty;
@@ -71,14 +75,18 @@ const SchemaObject = ({
           level={level}
         />
       ))}
-      <PropertyControls
-        onAdd={handleAddProperty}
-        onRemove={handleRemoveProperty}
-        onToggleRequired={handleToggleRequired}
-        schemaPath={path}
-        level={level}
-        requiredFields={schema.required || []}
-      />
+
+      {/* Show property controls only if the schema is of type 'object' */}
+      {schema.type === 'object' && (
+        <PropertyControls
+          onAdd={handleAddProperty}
+          onRemove={handleRemoveProperty}
+          onToggleRequired={handleToggleRequired}
+          schemaPath={path}
+          level={level}
+          requiredFields={schema.required || []}
+        />
+      )}
     </div>
   );
 };

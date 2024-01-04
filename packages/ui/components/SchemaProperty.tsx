@@ -1,6 +1,7 @@
 // SchemaProperty.tsx
 import React from 'react';
 import SchemaObject from './SchemaObject';
+import PropertyControls from './PropertyControls';
 
 const SchemaProperty = ({
     name, 
@@ -22,6 +23,9 @@ const SchemaProperty = ({
         if (newType === 'array') {
             // Initialize as an array of strings if not already specified
             updatedSchema.items = schema.items || { type: 'string' };
+        } else if (newType === 'object' && !updatedSchema.properties) {
+            // Initialize properties for new object type
+            updatedSchema.properties = {};
         }
 
         onTypeChange(path, name, updatedSchema);
@@ -89,6 +93,16 @@ const SchemaProperty = ({
             </div>
             {renderNestedProperties()}
             {renderArrayItemsProperties()}
+
+            {/* Add PropertyControls for nested objects */}
+            {schema.type === 'object' && (
+                <PropertyControls
+                    onAdd={onAddNestedProperty}
+                    schemaPath={`${path}.${name}`}
+                    level={level + 1}
+                />
+            )}
+
         </div>
     );
 };

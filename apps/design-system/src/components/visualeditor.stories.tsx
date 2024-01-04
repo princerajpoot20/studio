@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
-import { VisualEditor, CodeEditor, Examples } from '@asyncapi/studio-ui';
-
 // visualeditor.stories.tsx
-// import React, { useState } from 'react';
-// import VisualEditor from './VisualEditor'; // Update the import path as needed
-// import CodeEditor from './CodeEditor'; // Update the import path as needed
+import React, { useState } from 'react';
+import { VisualEditor, CodeEditor} from '@asyncapi/studio-ui';
+// import { Examples } from '@asyncapi/studio-ui';
 
 export default {
   title: 'SchemaEditor/VisualEditor',
@@ -139,6 +136,54 @@ export const WithArray_obj_and_obj = () => (
                   }
               }
           }
+      }
+    }, null, 2)}
+  />
+);
+
+
+
+export const Array_of_string = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "object",
+      "properties": {
+        "numbers": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "aString": {
+          "type": "string"
+        },
+        "aNumber": {
+          "type": "number"
+        }
+      },
+      "required": ["numbers", "aString", "aNumber"]
+    }, null, 2)}
+  />
+);
+
+export const Root_Array_of_Object = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": ["id", "name"]
       }
     }, null, 2)}
   />
