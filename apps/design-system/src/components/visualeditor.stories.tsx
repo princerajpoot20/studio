@@ -1,7 +1,7 @@
 // visualeditor.stories.tsx
 import React, { useState } from 'react';
 import { VisualEditor, CodeEditor} from '@asyncapi/studio-ui';
-// import { Examples } from '@asyncapi/studio-ui';
+import { Examples } from '@asyncapi/studio-ui';
 
 export default {
   title: 'SchemaEditor/VisualEditor',
@@ -13,13 +13,14 @@ export default {
 
 const Template = ({ initialSchema }) => {
   const [schema, setSchema] = useState(initialSchema);
-  const [editorType, setEditorType] = useState('visual'); // 'visual' or 'code'
+  const [editorType, setEditorType] = useState('visual');
 
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <button onClick={() => setEditorType('visual')}>Visual Editor</button>
-        <button onClick={() => setEditorType('code')}>Code Editor</button>
+        <button onClick={() => setEditorType('visual')}>Visual Editor </button>
+        <button onClick={() => setEditorType('code')}>Code Editor </button>
+        <button onClick={() => setEditorType('examples')}>Examples </button>
       </div>
       <div>
         {editorType === 'visual' && (
@@ -27,6 +28,9 @@ const Template = ({ initialSchema }) => {
         )}
         {editorType === 'code' && (
           <CodeEditor schema={schema} onSchemaChange={setSchema} />
+        )}
+        {editorType === 'examples' && (
+          <Examples schema={schema} onSchemaChange={setSchema} />
         )}
       </div>
     </div>
@@ -185,6 +189,20 @@ export const Root_Array_of_Object = () => (
         },
         "required": ["id", "name"]
       }
+    }, null, 2)}
+  />
+);
+
+export const property_having_more_than_one_datatype = () => (
+  <Template
+    initialSchema={JSON.stringify({
+      "type": "object",
+      "properties": {
+        "mixedTypeProperty": {
+          "type": ["boolean", "integer"]
+        }
+      },
+      "required": ["mixedTypeProperty"]
     }, null, 2)}
   />
 );
