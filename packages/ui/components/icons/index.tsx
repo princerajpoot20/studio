@@ -30,6 +30,7 @@ export { default as IBMMQIcon } from './IBMMQIcon'
 export { default as KafkaIcon } from './KafkaIcon'
 export { default as MQTTIcon } from './MQTTIcon'
 export { default as NATSIcon } from './NATSIcon'
+export { default as NotRequiredIcon, RequiredIcon } from './RequiredNotRequiredIcon';
 export { default as PulsarIcon } from './PulsarIcon'
 export { default as RedisIcon } from './RedisIcon'
 export { default as SealIcon } from './SealIcon'
